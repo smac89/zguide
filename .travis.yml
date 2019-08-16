@@ -31,4 +31,16 @@ script:
   - ./examples/build all
   - export PATH=$PATH:./bin/asciitosvg/
   - ./bin/buildpdfs
-  - ls -l *.pdf *.epub
+  - find -maxdepth 1 -type f -iname '*.pdf' -o -iname '*.epub'
+
+before_deploy:
+  - mkdir -p books
+  - find -maxdepth 1 -type f -iname '*.pdf' -o -iname '*.epub' -exec mv -t books {} +
+
+deploy:
+  - provider: pages
+    skip_cleanup: true
+    keep_history: true
+    commiter_from_gh: true
+    local_dir: books/
+    github_token: $GH_PAGES_TOKEN
